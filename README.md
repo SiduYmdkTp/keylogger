@@ -1,10 +1,6 @@
 # Keylogger
 
-Capture global keyboard events on Linux
-
-[![Build Status](https://travis-ci.org/MarinX/keylogger.svg?branch=master)](https://travis-ci.org/MarinX/keylogger)
-[![GoDoc](https://godoc.org/github.com/MarinX/keylogger?status.svg)](https://godoc.org/github.com/MarinX/keylogger)
-[![License MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE)
+Capture global keyboard events on Linux(this is based on [MarinX's project](https://github.com/MarinX/keylogger), thanks for his great job.
 
 ## Notes
 * Only Linux based
@@ -12,7 +8,7 @@ Capture global keyboard events on Linux
 
 ## Installation
 ```sh
-go get github.com/MarinX/keylogger
+go get github.com/tech-pi.com/keylogger
 ```
 
 ## Getting started
@@ -23,6 +19,7 @@ There is a helper on finding the keyboard.
  keyboard := keylogger.FindKeyboardDevice()
 ```
 Which goes through each file device name to find keyword "keyboard"
+if this does not work, you can use command `/proc/bus/input/devices` to find the corresponding event.
 ```sh
 /sys/class/input/event[0-255]/device/name
 ```
@@ -68,14 +65,5 @@ No magic, just run
 go test -v
 ```
 
-## Creating key sniffer (needs update)
-* [sniffing global keyboard events in go](https://medium.com/@marin.basic02/sniffing-global-keyboard-events-in-go-e5497e618192/)
-
-
 ## License
 This library is under the MIT License
-
-## Donate
-I don't drink beer, so energy drink will do :)
-
-BTC: 19AtHE6dgKX3R9vJSCSKRyF1saexLcBRep 
