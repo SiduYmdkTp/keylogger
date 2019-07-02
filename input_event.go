@@ -63,3 +63,8 @@ func (i *InputEvent) KeyPress() bool {
 func (i *InputEvent) KeyRelease() bool {
 	return i.Value == 0
 }
+
+// KeyRelease is the value when we long press the key on keyboard
+func (i *InputEvent) KeyLongPress() bool {
+	return i.Value == 2
+}
