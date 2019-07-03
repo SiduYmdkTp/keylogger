@@ -22,7 +22,7 @@ type KeyLogger struct {
 func New(devPath string) (*KeyLogger, error) {
 	k := &KeyLogger{}
 	if !k.IsRoot() {
-		return nil, errors.New("Must be run as root")
+		return nil, errors.New("Must be run as root ")
 	}
 	fd, err := os.Open(devPath)
 	k.fd = fd
@@ -93,7 +93,13 @@ func (k *KeyLogger) read() (*InputEvent, error) {
 func (k *KeyLogger) eventFromBuffer(buffer []byte) (*InputEvent, error) {
 	event := &InputEvent{}
 	err := binary.Read(bytes.NewBuffer(buffer), binary.LittleEndian, event)
-	return event, err
+	switch event.Code {
+	case 72, 75, 80, 77, 82, 83, 96, 78, 74:
+		return event, err
+	default:
+		return nil, err
+	}
+	//return event, err
 }
 
 // Close file descriptor
