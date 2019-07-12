@@ -15,7 +15,8 @@ import (
 
 // KeyLogger wrapper around file descriptior
 type KeyLogger struct {
-	fd *os.File
+	fd    *os.File
+	event chan InputEvent
 }
 
 // New creates a new keylogger for a device path
@@ -26,6 +27,7 @@ func New(devPath string) (*KeyLogger, error) {
 	}
 	fd, err := os.Open(devPath)
 	k.fd = fd
+	k.event = make(chan InputEvent)
 	return k, err
 }
 
@@ -57,7 +59,6 @@ func (k *KeyLogger) IsRoot() bool {
 // Blocking call, returns channel
 // Make sure to close channel when finish
 func (k *KeyLogger) Read() chan InputEvent {
-	event := make(chan InputEvent)
 	go func(event chan InputEvent) {
 		for {
 			e, err := k.read()
@@ -71,8 +72,8 @@ func (k *KeyLogger) Read() chan InputEvent {
 				event <- *e
 			}
 		}
-	}(event)
-	return event
+	}(k.event)
+	return k.event
 }
 
 // read from file description and parse binary into go struct
@@ -93,13 +94,7 @@ func (k *KeyLogger) read() (*InputEvent, error) {
 func (k *KeyLogger) eventFromBuffer(buffer []byte) (*InputEvent, error) {
 	event := &InputEvent{}
 	err := binary.Read(bytes.NewBuffer(buffer), binary.LittleEndian, event)
-	switch event.Code {
-	case 72, 75, 80, 77, 82, 83, 96, 78, 74:
-		return event, err
-	default:
-		return nil, err
-	}
-	//return event, err
+	return event, err
 }
 
 // Close file descriptor
@@ -107,5 +102,6 @@ func (k *KeyLogger) Close() error {
 	if k.fd == nil {
 		return nil
 	}
+	close(k.event)
 	return k.fd.Close()
 }
